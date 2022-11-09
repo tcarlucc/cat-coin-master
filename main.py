@@ -5,6 +5,7 @@ Cat Coin Blockchain
 """
 
 import csv
+import miner
 
 def menu_loop() -> int:
     """
@@ -45,7 +46,7 @@ def load_wallets() -> dict:
     with open('wallets.csv', mode='r') as f:
         wallet_data = csv.reader(f)
         for lines in wallet_data:
-            wallets[int(lines[0])] = int(lines[1])
+            wallets[float(lines[0])] = float(lines[1])
 
     return wallets
 
@@ -113,6 +114,14 @@ if __name__ == "__main__":
                 confirm_transfer = input("Are you sure you want to transfer " + str(transfer_amt) +
                                          " CatCoin? y/n")
                 if confirm_transfer == "y" or confirm_transfer == "Y":
+                    wallets_info[source] = wallets_info[source] - transfer_amt
+                    wallets_info[destination] = wallets_info[destination] + transfer_amt
+
+                    with open('wallets.csv', mode='w') as f:
+                        for i in range(len(wallets_info)):
+                            f.writelines(str(i+1) + "," + str(wallets_info[i+1]))
+                            f.writelines("\n")
+
                     print("=====================")
                     print("Transaction Complete!")
                     print("=====================")
