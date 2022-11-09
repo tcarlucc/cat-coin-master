@@ -53,14 +53,22 @@ def load_wallets() -> dict:
     return wallets
 
 
-def add_to_blockchain(f, t, amt):
+def add_to_blockchain(fr, to, amt):
     prev_block = []
     with open("blocks.csv", mode="r") as bc:
-        for lines in bc:
+        blox = csv.reader(bc)
+        for lines in blox:
             prev_block = lines
 
-    block = [f, t, amt, int(lines[3]) + 1, prev_block[4], str(t.now()),miner.mining(prev_block[4])]
+    nonce, timestamp = miner.mining(prev_block[-1])
+    block = [fr, to, amt, int(lines[3]) + 1, prev_block[-1], timestamp, prev_block[-1], nonce]
+    block_string = ""
+    for i in range(1, len(block)-2):
+        block_string += str(block[i]) + ","
+    block_string += str(block[len(block)-1])
 
+    with open("blocks.csv", mode="a") as bc:
+        bc.writelines("\n"+block_string)
 
 if __name__ == "__main__":
     print("Welcome to CatCoin!")
@@ -133,6 +141,7 @@ if __name__ == "__main__":
                             f.writelines(str(i+1) + "," + str(wallets_info[i+1]))
                             f.writelines("\n")
 
+                    add_to_blockchain(source, destination, transfer_amt)
 
                     print("=====================")
                     print("Transaction Complete!")
