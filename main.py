@@ -29,8 +29,8 @@ def menu_loop() -> int:
 def load_blockchain() -> dict:
     d = {}
     with open('wallets.csv', mode='r') as f:
-        csvFile = csv.reader(f)
-        for lines in csvFile:
+        wallets = csv.reader(f)
+        for lines in wallets:
             d[int(lines[0])] = int(lines[1])
 
     return d
@@ -61,6 +61,7 @@ if __name__ == "__main__":
         elif choice == 2:
             source = 0
             destination = 0
+            transfer_amt = 0
             while not source:
                 try:
                     source = int(input("Please choose a source wallet: 1, 2, or 3:"))
@@ -80,6 +81,34 @@ if __name__ == "__main__":
                         destination = 0
                 except ValueError:
                     print("Please enter a valid integer!")
+            while not transfer_amt:
+                try:
+                    transfer_amt = float(input("Enter the amount you wish to transfer:"))
+                    if transfer_amt <= 0:
+                        print("Please enter a valid float value!")
+                        transfer_amt = 0
+                    elif transfer_amt > blockchain_info[source]:
+                        print("Transfer amount exceeds wallet " + str(source) + "'s balance!")
+                        transfer_amt = 0
+                except ValueError:
+                    print("Please enter a valid float value!")
+
+            # TODO: Add miner functionality
+            confirm_transfer = ""
+            while not confirm_transfer:
+                confirm_transfer = input("Are you sure you want to transfer " + str(transfer_amt) +
+                                         " CatCoin? y/n")
+                if confirm_transfer == "y" or confirm_transfer == "Y":
+                    print("=====================")
+                    print("Transaction Complete!")
+                    print("=====================")
+                elif confirm_transfer == "n" or confirm_transfer == "N":
+                    print("======================")
+                    print("Transaction Cancelled.")
+                    print("======================")
+                else:
+                    print("Please enter a valid value, y/n")
+                    confirm_transfer = ""
         else:
             quit_confirmation = ""
             while not quit_confirmation:
