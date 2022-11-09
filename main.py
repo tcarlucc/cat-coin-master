@@ -3,10 +3,18 @@ Thomas Carlucci
 CS 166 OL
 Cat Coin Blockchain
 """
+
 import csv
 
-
 def menu_loop() -> int:
+    """
+    Collect menu option from user consisting of:
+    1: Checking the balance of a wallet
+    2: Transferring coins between two wallets
+    3: Exiting the program
+
+    :return: option: int
+    """
     option = 0
 
     print("Please select from the following options:")
@@ -26,19 +34,25 @@ def menu_loop() -> int:
             print("Please enter a valid integer!")
 
 
-def load_blockchain() -> dict:
-    d = {}
-    with open('wallets.csv', mode='r') as f:
-        wallets = csv.reader(f)
-        for lines in wallets:
-            d[int(lines[0])] = int(lines[1])
+def load_wallets() -> dict:
+    """
+    Loads wallet info from wallets.csv
 
-    return d
+    :return: wallets: dict
+    """
+
+    wallets = {}
+    with open('wallets.csv', mode='r') as f:
+        wallet_data = csv.reader(f)
+        for lines in wallet_data:
+            wallets[int(lines[0])] = int(lines[1])
+
+    return wallets
 
 
 if __name__ == "__main__":
     print("Welcome to CatCoin!")
-    blockchain_info = load_blockchain()
+    wallets_info = load_wallets()
     quit_flag = False
 
     while not quit_flag:
@@ -53,7 +67,7 @@ if __name__ == "__main__":
                         wallet = 0
                     else:
                         print("===============================")
-                        print("Wallet " + str(wallet) + " balance: " + str(blockchain_info[wallet]) + " CatCoins")
+                        print("Wallet " + str(wallet) + " balance: " + str(wallets_info[wallet]) + " CatCoins")
                         print("===============================")
                 except ValueError:
                     print("Please enter a valid integer!")
@@ -87,7 +101,7 @@ if __name__ == "__main__":
                     if transfer_amt <= 0:
                         print("Please enter a valid float value!")
                         transfer_amt = 0
-                    elif transfer_amt > blockchain_info[source]:
+                    elif transfer_amt > wallets_info[source]:
                         print("Transfer amount exceeds wallet " + str(source) + "'s balance!")
                         transfer_amt = 0
                 except ValueError:
