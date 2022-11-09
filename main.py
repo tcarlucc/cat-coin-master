@@ -6,6 +6,8 @@ Cat Coin Blockchain
 
 import csv
 import miner
+from datetime import datetime as t
+
 
 def menu_loop() -> int:
     """
@@ -49,6 +51,15 @@ def load_wallets() -> dict:
             wallets[float(lines[0])] = float(lines[1])
 
     return wallets
+
+
+def add_to_blockchain(f, t, amt):
+    prev_block = []
+    with open("blocks.csv", mode="r") as bc:
+        for lines in bc:
+            prev_block = lines
+
+    block = [f, t, amt, int(lines[3]) + 1, prev_block[4], str(t.now()),miner.mining(prev_block[4])]
 
 
 if __name__ == "__main__":
@@ -121,6 +132,7 @@ if __name__ == "__main__":
                         for i in range(len(wallets_info)):
                             f.writelines(str(i+1) + "," + str(wallets_info[i+1]))
                             f.writelines("\n")
+
 
                     print("=====================")
                     print("Transaction Complete!")
